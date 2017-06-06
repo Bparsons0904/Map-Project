@@ -2,104 +2,124 @@ var initialPlaces = [
   {
     name : 'USS Wisconsin BB-64',
     address : '1 Waterside Dr, Norfolk, VA 23510',
-    lat : '36.847681',
-    lng : '-76.295287',
-  },
-  {
+    type : 'Museum',
+    latlng : {
+      lat : 36.847681,
+      lng : -76.295287
+    },
+  }, {
     name : "The NorVa",
     address : '317 Monticello Ave, Norfolk, VA 23510',
-    lat : '36.850254',
-    lng : '-76.289670',
-  },
-  {
+    type : 'Attraction',
+    latlng : {
+      lat : 36.850254,
+      lng : -76.289670
+    },
+  }, {
     name : "Harbor Park Stadium",
     address : '150 Park Ave, Norfolk, VA 23510',
-    lat : '36.842657',
-    lng : '-76.278038',
-  },
-  {
+    type : 'Attraction',
+    latlng : {
+      lat : 36.842657,
+      lng : -76.278038
+    },
+  }, {
     name : "Virginia Aquarium & Marine Science Center",
     address : '717 General Booth Blvd, Virginia Beach, VA 23451',
-    lat : '36.821113',
-    lng : '-75.983551',
+    type : 'Attraction',
+    latlng : {
+      lat : 36.821113,
+      lng : -75.983551
   },
-  {
+}, {
     name : "Adventure Parasail",
     address : '300 Winston Salem Ave, Virginia Beach, VA 23451',
-    lat : '36.832082',
-    lng : '-75.974112',
+    type : 'Attraction',
+    latlng : {
+      lat : 36.832082,
+      lng : -75.974112
   },
-  {
+}, {
     name : "Tautog's Restaurant",
     address : '205 23rd St, Virginia Beach, VA 23451',
-    lat : '36.851296',
-    lng : '-75.976501',
+    type : 'Restaurant',
+    latlng : {
+      lat : 36.851296,
+      lng : -75.976501
   },
-  {
+}, {
     name : "Virginia Zoological Park",
     address : '3500 Granby St, Norfolk, VA 23504',
-    lat : '36.878735',
-    lng : '-76.279918',
+    type : 'Attraction',
+    latlng : {
+      lat : 36.878735,
+      lng : -76.279918
   },
-  {
+}, {
     name : "Mount Trashmore Park",
     address : '310 Edwin Dr, Virginia Beach, VA 23462',
-    lat : '36.829047',
-    lng : '-76.124740',
+    type : 'Attraction',
+    latlng : {
+      lat : 36.829047,
+      lng : -76.124740
   },
-  {
+}, {
     name : "Virginia Beach Fishing Pier",
     address : '1413 Atlantic Ave, Virginia Beach, VA 23451',
-    lat : '36.843613',
-    lng : '-75.970959',
+    type : 'Attraction',
+    latlng : {
+      lat : 36.843613,
+      lng : -75.970959
   },
-  {
+}, {
     name : "Mahi Mah's Seafood",
     address : '615 Atlantic Avenue, Virginia Beach, VA 23451',
-    lat : '36.835315',
-    lng : '-75.970998',
+    type : 'Restaurant',
+    latlng : {
+      lat : 36.835315,
+      lng : -75.970998
   },
-];
+}];
 
 
 
 var PlaceInformation = function(data) {
   this.name = ko.observable(data.name);
-
+  this.latlng = ko.observable(data.latlng);
+  this.type = ko.observable(data.type);
+  this.visible = ko.observable( true );
 };
-
 
 
 var ViewModel = function() {
   var self = this;
-  self.categoryList = [];
 
-  self.categories = ko.observableArray( self.categoryList );
 
-  self.selectedCategory = ko.observable();  
+  self.selectedCategory = ko.observable();
 
-  this.locationList = ko.observableArray([]);
+  this.newPlace = ko.observable();
+
+
+
+  this.locationList = ko.observableArray(initialPlaces);
 
   initialPlaces.forEach(function(places){
     self.locationList.push( new PlaceInformation(places) );
   });
 
-  this.currentPlace = ko.observable( this.locationList()[0] );
+  this.currentPlace = ko.observable( );
 
-  this.setPlace = function(clickedPlace) {
-    self.currentPlace(clickedPlace)
+  this.markerSelected = function(location) {
+    map.setCenter(location.latlng);
+    map.setZoom(17);
+    self.currentPlace(location);
   };
-
 
 };
 
-ko.applyBindings(new ViewModel());
 
-
-
-// Function to initialize the map within the map div
 function initMap() {
-  var map = new google.maps.Map(document.getElementById('map'), {
+  map = new google.maps.Map(document.getElementById('map'), {
     zoom: 12,
     center: {lat: 36.829047, lng: -76.124740},
     mapTypeControl: true,
@@ -121,22 +141,28 @@ function initMap() {
     position: google.maps.ControlPosition.RIGHT_BOTTOM
     },
   });
-
-  var marker
-    for (i = 0; i <initialPlaces.length; i++){
-      marker = new google.maps.Marker({
-        position: new google.maps.LatLng(initialPlaces[i].lat, initialPlaces[i].lng),
-        map: map,
-        animation: google.maps.Animation.DROP,
-        title: initialPlaces[i].name,
-      });
-    }
+    markers( newViewModel.locationList() );
 }
 
 
+function markers(locations) {
+  for (i = 0; i <locations.length; i++){
+    marker = new google.maps.Marker({
+      position: new google.maps.LatLng(locations[i].latlng),
+      map: map,
+      animation: google.maps.Animation.DROP,
+      title: String(locations[i].name),
+    });
+    google.maps.event.addListener(marker, 'click', (function(location) {
+      return function() {
+        newViewModel.markerSelected(location);
+      };
+    })(locations[i]));
+  };
+};
 
-
-
+var newViewModel = new ViewModel();
+ko.applyBindings( new ViewModel() );
 
 
 

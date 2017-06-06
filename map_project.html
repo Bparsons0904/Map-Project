@@ -12,13 +12,13 @@
             <div id="map"></div>
       <div id="mySidenav" class="sidenav" data-bind="foreach: locationList">
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-        <a data-bind="text: name, click: $parent.setPlace"></a>
+        <a data-bind="text: name, click: $parent.markerSelected"></a>
       </div>
       <div id="main" class="navclosed">
         <span onclick="openNav()"><img class="menu_icon" src="images/hamburger_icon.png" /></span>
       </div>
       <div class='infobox col-md-6 col-md-offset-3' data-bind='with: currentPlace'>
-        <h3 class='infobox_detail' data-bind="text: name">This is the text box</h3>
+        <h3 class='infobox_detail' data-bind="text: name"></h3>
 
       </div>
 
