@@ -1,3 +1,4 @@
+
 var initialPlaces = [
   {
     name : 'USS Wisconsin BB-64',
@@ -65,6 +66,8 @@ var initialPlaces = [
 
 var PlaceInformation = function(data) {
   this.name = ko.observable(data.name);
+  this.lat = ko.observable(data.lat);
+  this.lng = ko.observable(data.lng);
 
 };
 
@@ -72,11 +75,22 @@ var PlaceInformation = function(data) {
 
 var ViewModel = function() {
   var self = this;
+
+
+  self.currentPlace = ko.observable();
+
   self.categoryList = [];
 
-  self.categories = ko.observableArray( self.categoryList );
+  initialPlaces.map( location => {
+      if ( !self.categoryList.includes( location.category ) ) {
+          self.categoryList.push( location.category );
+      }
+  } );
 
-  self.selectedCategory = ko.observable();  
+  self.locationsArray = ko.observableArray( initialPlaces );
+
+
+
 
   this.locationList = ko.observableArray([]);
 
@@ -93,7 +107,7 @@ var ViewModel = function() {
 
 };
 
-ko.applyBindings(new ViewModel());
+
 
 
 
@@ -121,22 +135,31 @@ function initMap() {
     position: google.maps.ControlPosition.RIGHT_BOTTOM
     },
   });
+  markers( ViewModel.locationsArray() );
+};
 
-  var marker
-    for (i = 0; i <initialPlaces.length; i++){
+function markers(locations) {
+    for (i = 0; i <locations.length; i++){
       marker = new google.maps.Marker({
-        position: new google.maps.LatLng(initialPlaces[i].lat, initialPlaces[i].lng),
-        map: map,
-        animation: google.maps.Animation.DROP,
-        title: initialPlaces[i].name,
+      position: new google.maps.LatLng(locations[i].lat, locations[i].lng),
+      map: map,
+      animation: google.maps.Animation.DROP,
+      title: locations[i].name,
+      id: i
       });
-    }
-}
+      google.maps.event.addListener(marker, 'click', (function(location) {
+        return function() {
+
+          map.setZoom(14);
+        };
+      })(locations[i]));
+    };
+};
 
 
 
 
-
+ko.applyBindings( new ViewModel());
 
 
 
