@@ -7,6 +7,10 @@ body, html {
 h1 {
   color: white;
 }
+
+.infoh1 {
+  color: black;
+}
 .container {
   width: 100%;
   height: 100%;
