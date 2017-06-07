@@ -125,12 +125,12 @@ var ViewModel = function() {
 
   this.foursquare = function(location) {
     var oauth = "IQ0J14AEG4RQ2GJHIZMQ54OKSOVV3C5ZQKTHAT44M2WKQ3DB"
-    $.get("https://api.foursquare.com/v2/venues/search?ll=" + location.latlng.lat + "," + location.latlng.lng + "&oauth_token=" + oauth + "&v=20170606",
-     function(data) {
+    $.ajax("https://api.foursquare.com/v2/venues/search?ll=" + location.latlng.lat + "," + location.latlng.lng + "&oauth_token=" + oauth + "&v=20170606",
+  ).done(function(data) {
         var venue = data.response.venues[0];
         location.id = ko.observable(venue.id);
-    $.get("https://api.foursquare.com/v2/venues/" + location.id() + "/?oauth_token=" + oauth + "&v=20170606",
-      function(details) {
+    $.ajax("https://api.foursquare.com/v2/venues/" + location.id() + "/?oauth_token=" + oauth + "&v=20170606",
+      ).done(function(details) {
         var suffix = details.response.venue.bestPhoto.suffix;
         newViewModel.photoSuffix = suffix;
       });
