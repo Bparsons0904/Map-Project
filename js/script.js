@@ -125,28 +125,51 @@ var ViewModel = function() {
 
   this.foursquare = function(location) {
     var oauth = "IQ0J14AEG4RQ2GJHIZMQ54OKSOVV3C5ZQKTHAT44M2WKQ3DB"
-    $.ajax("https://api.foursquare.com/v2/venues/search?ll=" + location.latlng.lat + "," + location.latlng.lng + "&oauth_token=" + oauth + "&v=20170606",
-  ).done(function(data) {
-        var venue = data.response.venues[0];
-        location.id = ko.observable(venue.id);
-    $.ajax("https://api.foursquare.com/v2/venues/" + location.id() + "/?oauth_token=" + oauth + "&v=20170606",
-      ).done(function(details) {
-        var suffix = details.response.venue.bestPhoto.suffix;
-        newViewModel.photoSuffix = suffix;
+    var locationID;
+    var suffix;
+    $.get("https://api.foursquare.com/v2/venues/search?ll=" + location.latlng.lat + "," + location.latlng.lng + "&oauth_token=" + oauth + "&v=20170606",
+      function(data) {
+        var venue = data.response.venues[0].id;
+        locationID = venue;;
+
+    $.get("https://api.foursquare.com/v2/venues/" + locationID + "/?oauth_token=" + oauth + "&v=20170606",
+      function(details) {
+        var suffixString = details.response.venue.bestPhoto.suffix;
+        suffix = suffixString;
+        console.log(suffix);
+        return suffix;
       });
     });
   };
 
   this.markerSelected = function(location) {
-    var venue_id;
+    var oauth = "IQ0J14AEG4RQ2GJHIZMQ54OKSOVV3C5ZQKTHAT44M2WKQ3DB"
+    $.get("https://api.foursquare.com/v2/venues/search?ll=" + location.latlng.lat + "," + location.latlng.lng + "&oauth_token=" + oauth + "&v=20170606",
+      function(data) {
+        var locationID = data.response.venues[0].id;
+    $.get("https://api.foursquare.com/v2/venues/" + locationID + "/?oauth_token=" + oauth + "&v=20170606",
+      function(details) {
+        var suffixString = details.response.venue.bestPhoto.suffix;
+        var rating = details.response.venue.rating;
+        var ratingColor = details.response.venue.ratingColor;
+        var visits = details.response.venue.stats.visitsCount;
+        suffix = suffixString;
+        var content = "";
+        content += "<h1 class='infoName'>" + location.name + "</h1>";
+        content += "<h2 class='infoAddress'>" + location.address + "</h2>";
+        content += "<h2 class='infoType'>" + location.type + "</h2>";
+        content += "<h3 class='infoRating' style='color:#" + ratingColor + "'>Current Rating: " + rating + "</h3>";
+        content += "<h3 class='infoVisits'>Registered Visits: " + visits + "</h3>";
+        content += "<img class='viewImage' src='" + "https://igx.4sqi.net/img/general/width200" + suffixString + "' alt='Image'>";
+        infowindow.setContent(content);
+      });
+    });
     map.setCenter(location.latlng);
     map.setZoom(17);
-    map.panBy(0,-200);
+    map.panBy(0,-250);
     self.currentPlace(location);
     location.marker.setAnimation(google.maps.Animation.BOUNCE);
     closeNav()
-    newViewModel.foursquare(location);
-    infowindow.setContent(newViewModel.infoWindowContent(location));
     infowindow.open(map, location.marker);
 
 
@@ -167,7 +190,7 @@ function initMap() {
     },
     zoomControl: true,
     zoomControlOptions: {
-      position: google.maps.ControlPosition.LEFT_CENTER
+      position: google.maps.ControlPosition.BOTTOM_CENTER
     },
     scaleControl: true,
     streetViewControl: true,
