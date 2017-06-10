@@ -86,11 +86,6 @@ var initialPlaces = [
 var PlaceInformation = function(data) {
   this.name = ko.observable(data.name);
   this.latlng = ko.observable(data.latlng);
-  this.type = ko.observable(data.type);
-};
-
-var PlaceInformationName = function(data) {
-  this.name = ko.observable(data.name);
 };
 
 var ViewModel = function() {
@@ -124,11 +119,11 @@ var ViewModel = function() {
 
   this.markerSelected = function(location) {
     var oauth = "IQ0J14AEG4RQ2GJHIZMQ54OKSOVV3C5ZQKTHAT44M2WKQ3DB"
-    $.get("https://api.foursquare.com/v2/venues/search?ll=" + location.latlng.lat + "," + location.latlng.lng + "&oauth_token=" + oauth + "&v=20170606",
-      function(data) {
+    $.ajax("https://api.foursquare.com/v2/venues/search?ll=" + location.latlng.lat + "," + location.latlng.lng + "&oauth_token=" + oauth + "&v=20170606",
+      ).done(function(data) {
         var locationID = data.response.venues[0].id;
-    $.get("https://api.foursquare.com/v2/venues/" + locationID + "/?oauth_token=" + oauth + "&v=20170606",
-      function(details) {
+    $.ajax("https://api.foursquare.com/v2/venues/" + locationID + "/?oauth_token=" + oauth + "&v=20170606",
+      ).done(function(details) {
         var suffixString = details.response.venue.bestPhoto.suffix;
         var rating = details.response.venue.rating;
         var ratingColor = details.response.venue.ratingColor;
@@ -141,13 +136,30 @@ var ViewModel = function() {
         content += "<h3 class='infoVisits'>Registered Visits: " + visits + "</h3>";
         content += "<img class='viewImage' src='" + "https://igx.4sqi.net/img/general/width200" + suffixString + "' alt='Image'>";
         infowindow.setContent(content);
+      }).fail(function() {
+        var content = "";
+        content += "<h1 class='infoName'>" + location.name + "</h1>";
+        content += "<h2 class='infoAddress'>" + location.address + "</h2>";
+        content += "<h2 class='infoType'>" + location.type + "</h2>";
+        content += "<h4 class='error'>Unable to retrive additonal information from FourSquare<h4>";
+        infowindow.setContent(content);
       });
+    }).fail(function() {
+      var content = "";
+      content += "<h1 class='infoName'>" + location.name + "</h1>";
+      content += "<h2 class='infoAddress'>" + location.address + "</h2>";
+      content += "<h2 class='infoType'>" + location.type + "</h2>";
+      content += "<h4 class='error'>Unable to retrive additonal information from FourSquare<h4>";
+      infowindow.setContent(content);
     });
     map.setCenter(location.latlng);
     map.setZoom(17);
     map.panBy(0,-250);
     location.marker.setAnimation(google.maps.Animation.BOUNCE);
-    closeNav()
+    setTimeout(function() {
+        location.marker.setAnimation(null)
+    }, 3000);
+    closeNav();
     infowindow.open(map, location.marker);
 
 
