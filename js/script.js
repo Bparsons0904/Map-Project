@@ -101,46 +101,21 @@ var ViewModel = function() {
     self.locationList.push( new PlaceInformation(places) );
   });
 
-  this.currentPlace = ko.observable();
+  this.filter = ko.observable("");
 
-  self.photoSuffix = ko.observable();
-  self.photoBase = ko.observable('https://igx.4sqi.net/img/general/width200');
-
-  self.imgSrc = ko.computed(function() {
-    return self.photoBase() + self.photoSuffix();
+  self.locationList = ko.computed(function() {
+      var filter = String(self.filter()).toLowerCase();
+      if (!filter) {
+          self.locationList().forEach(function(location){
+          });
+          return self.locationList();
+      } else {
+          return ko.utils.arrayFilter(self.locationList(), function(location) {
+              var match = String(location.name).toLowerCase().indexOf(filter) !== -1;
+              return match;
+          });
+      };
   });
-
-  this.infoWindowContent = function(location) {
-/*    newViewModel.imgSrc = ko.observable("<img class='viewImage' src='https://igx.4sqi.net/img/general/width200" + newViewModel.photoSuffix() + "' alt='Image' data-bind=(attr: {src: imgSrc})>"); */
-    var content = "";
-    content += "<h1 class='infoh1'>" + location.name + "</h1>";
-    content += "<h2>" + location.address + "</h2>";
-    content += "<h2>" + location.type + "</h2>";
-    content += "<img class='viewImage' src='images/placehold.png' alt='Image' data-bind=(attr: {src: imgSrc})>";
-    return content
-
-  };
-
-
-
-  this.foursquare = function(location) {
-    var oauth = "IQ0J14AEG4RQ2GJHIZMQ54OKSOVV3C5ZQKTHAT44M2WKQ3DB"
-    var locationID;
-    var suffix;
-    $.get("https://api.foursquare.com/v2/venues/search?ll=" + location.latlng.lat + "," + location.latlng.lng + "&oauth_token=" + oauth + "&v=20170606",
-      function(data) {
-        var venue = data.response.venues[0].id;
-        locationID = venue;;
-
-    $.get("https://api.foursquare.com/v2/venues/" + locationID + "/?oauth_token=" + oauth + "&v=20170606",
-      function(details) {
-        var suffixString = details.response.venue.bestPhoto.suffix;
-        suffix = suffixString;
-        console.log(suffix);
-        return suffix;
-      });
-    });
-  };
 
   this.markerSelected = function(location) {
     var oauth = "IQ0J14AEG4RQ2GJHIZMQ54OKSOVV3C5ZQKTHAT44M2WKQ3DB"
@@ -153,12 +128,11 @@ var ViewModel = function() {
         var rating = details.response.venue.rating;
         var ratingColor = details.response.venue.ratingColor;
         var visits = details.response.venue.stats.visitsCount;
-        suffix = suffixString;
         var content = "";
         content += "<h1 class='infoName'>" + location.name + "</h1>";
         content += "<h2 class='infoAddress'>" + location.address + "</h2>";
         content += "<h2 class='infoType'>" + location.type + "</h2>";
-        content += "<h3 class='infoRating' style='color:#" + ratingColor + "'>Current Rating: " + rating + "</h3>";
+        content += "<div><h3 class='infoRating'>Current Rating: </h3><h3 class='infoRating' style='color:#" + ratingColor + "'>" + rating + "</h3></div>";
         content += "<h3 class='infoVisits'>Registered Visits: " + visits + "</h3>";
         content += "<img class='viewImage' src='" + "https://igx.4sqi.net/img/general/width200" + suffixString + "' alt='Image'>";
         infowindow.setContent(content);
@@ -167,7 +141,6 @@ var ViewModel = function() {
     map.setCenter(location.latlng);
     map.setZoom(17);
     map.panBy(0,-250);
-    self.currentPlace(location);
     location.marker.setAnimation(google.maps.Animation.BOUNCE);
     closeNav()
     infowindow.open(map, location.marker);
