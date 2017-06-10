@@ -94,10 +94,10 @@ var ViewModel = function() {
   this.newPlace = ko.observable();
 
   this.markersList = ko.observableArray(initialPlaces);
-  this.locationList = ko.observable(initialPlaces);
+  this.locationList = ko.observableArray([]);
 
   initialPlaces.forEach(function(places){
-    self.markersList.push( new PlaceInformation(places) );
+    self.locationList.push(places);
   });
 
 
@@ -193,7 +193,7 @@ function initMap() {
     },
   });
     infowindow = new google.maps.InfoWindow();
-    markers( newViewModel.markersList() );
+    markers( newViewModel.locationList() );
 };
 
 
@@ -204,7 +204,7 @@ function markers(locations) {
       map: map,
       title: String(locations[i].name),
     });
-    newViewModel.markersList()[i].marker = marker;
+    newViewModel.locationList()[i].marker = marker;
     google.maps.event.addListener(marker, 'click', (function(location) {
       return function() {
         newViewModel.markerSelected(location);
