@@ -10,10 +10,17 @@
   <body>
     <div class="container">
             <div id="map"></div>
-      <div id="mySidenav" class="sidenav" data-bind="foreach: locationFilter">
-        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-        
-        <a data-bind="text: name, click: $parent.markerSelected"></a>
+            <div id="mySidenav" class="sidenav">
+              <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+              <p class="filter">
+                Filter by Name: <input data-bind="textInput: filter, valueUpdate: 'afterkeydown'" /></p>
+              </p>
+              <div class="locations" data-bind="foreach: locationFilter">
+
+
+                <a data-bind="text: name, click: $parent.markerSelected"></a>
+            </div>
+
       </div>
       <div id="main" class="navclosed">
         <span onclick="openNav()"><img class="menu_icon" src="images/hamburger_icon.png" /></span>

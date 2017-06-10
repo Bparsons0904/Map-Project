@@ -93,7 +93,7 @@ var ViewModel = function() {
 
   this.newPlace = ko.observable();
 
-  this.markersList = ko.observableArray(initialPlaces);
+  this.markersList = ko.observableArray([]);
   this.locationList = ko.observableArray([]);
 
   initialPlaces.forEach(function(places){
@@ -107,11 +107,15 @@ var ViewModel = function() {
       var filter = String(self.filter()).toLowerCase();
       if (!filter) {
           self.locationList().forEach(function(location){
+            if (location.marker) {
+                location.marker.setVisible(true);
+            };
           });
           return self.locationList();
       } else {
           return ko.utils.arrayFilter(self.locationList(), function(location) {
               var match = String(location.name).toLowerCase().indexOf(filter) !== -1;
+              location.marker.setVisible(match);
               return match;
           });
       };
@@ -193,25 +197,22 @@ function initMap() {
     },
   });
     infowindow = new google.maps.InfoWindow();
-    markers( newViewModel.locationList() );
-};
-
-
-function markers(locations) {
-  for (i = 0; i <locations.length; i++){
-    marker = new google.maps.Marker({
-      position: new google.maps.LatLng(locations[i].latlng),
-      map: map,
-      title: String(locations[i].name),
-    });
-    newViewModel.locationList()[i].marker = marker;
-    google.maps.event.addListener(marker, 'click', (function(location) {
-      return function() {
-        newViewModel.markerSelected(location);
-      };
-    })(locations[i]));
+    var locations = newViewModel.locationFilter();
+    for (i = 0; i <locations.length; i++){
+      marker = new google.maps.Marker({
+        position: new google.maps.LatLng(locations[i].latlng),
+        map: map,
+        title: String(locations[i].name),
+      });
+      newViewModel.locationList()[i].marker = marker;
+      google.maps.event.addListener(marker, 'click', (function(location) {
+        return function() {
+          newViewModel.markerSelected(location);
+        };
+      })(locations[i]));
+    };
   };
-};
+
 
 var newViewModel = new ViewModel();
 ko.applyBindings(new ViewModel());
