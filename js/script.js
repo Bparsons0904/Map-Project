@@ -110,7 +110,7 @@ var ViewModel = function() {
           self.locationList().forEach(function(location){
             if (location.marker) {
                 location.marker.setVisible(true);
-            };
+            }
           });
           return self.locationList();
       } else {
@@ -120,18 +120,18 @@ var ViewModel = function() {
               location.marker.setVisible(match);
               return match;
           });
-      };
+      }
   });
 
 // Function that is started based on click event
   this.markerSelected = function(location) {
-    var oauth = "IQ0J14AEG4RQ2GJHIZMQ54OKSOVV3C5ZQKTHAT44M2WKQ3DB"
+    var oauth = "IQ0J14AEG4RQ2GJHIZMQ54OKSOVV3C5ZQKTHAT44M2WKQ3DB";
     // Grab lat and Lng from array, submit to FourSquare to aquire location ID
-    $.ajax("https://api.foursquare.com/v2/venues/search?ll=" + location.latlng.lat + "," + location.latlng.lng + "&oauth_token=" + oauth + "&v=20170606",
-      ).done(function(data) {
+    $.ajax("https://api.foursquare.com/v2/venues/search?ll=" + location.latlng.lat + "," + location.latlng.lng + "&oauth_token=" + oauth + "&v=20170606"
+       ).done(function(data) {
         var locationID = data.response.venues[0].id;
     // Use locationID to get specifics from location
-    $.ajax("https://api.foursquare.com/v2/venues/" + locationID + "/?oauth_token=" + oauth + "&v=20170606",
+    $.ajax("https://api.foursquare.com/v2/venues/" + locationID + "/?oauth_token=" + oauth + "&v=20170606"
       ).done(function(details) {
         // Sets variables from returned JSON
         var suffixString = details.response.venue.bestPhoto.suffix;
@@ -142,12 +142,12 @@ var ViewModel = function() {
         var content = "";
         content += "<div class='infoWindo'><h2 class='infoName'>" + location.name + "</h2>";
         content += "<h3 class='infoAddress'>" + location.address + "</h3>";
-        content += "<div class='fourSquare'>"
+        content += "<div class='fourSquare'>";
         content += "<img class='viewImage' src='" + "https://igx.4sqi.net/img/general/width200" + suffixString + "' alt='Image'>";
         content += "<div class='infoRight'><h4 class='infoType'>" + location.type + "</h4>";
         content += "<div class='infoRating'><h4 class='infoRating'>Current Rating: </h4><h4 class='infoRating' style='color:#" + ratingColor + "'>" + rating + "</h4></div>";
         content += "<h4 class='infoVisits'>Registered Visits: " + visits + "</h4>";
-        content += "</div></div>"
+        content += "</div></div>";
         infowindow.setContent(content);
       // If error from 2nd AJAX request, add content to view window
       }).fail(function() {
@@ -174,7 +174,7 @@ var ViewModel = function() {
     // Add marker animation for set time
     location.marker.setAnimation(google.maps.Animation.BOUNCE);
     setTimeout(function() {
-        location.marker.setAnimation(null)
+        location.marker.setAnimation(null);
     }, 3000);
     // close nav window if open
     closeNav();
@@ -228,20 +228,20 @@ function initMap() {
           newViewModel.markerSelected(location);
         };
       })(locations[i]));
-    };
-  };
+    }
+  }
 
 
 var newViewModel = new ViewModel();
 ko.applyBindings(new ViewModel());
 
 
-// Set the width of the side navigation to 250px
+// Set the width of the side navigation to 250px from W3School
 function openNav() {
     document.getElementById("mySidenav").style.width = "250px";
-};
+}
 
-// Set the width of the side navigation to 0 
+// Set the width of the side navigation to 0 from W3School
 function closeNav() {
     document.getElementById("mySidenav").style.width = "0";
-};
+}
