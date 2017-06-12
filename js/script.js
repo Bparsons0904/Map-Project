@@ -93,7 +93,7 @@ var ViewModel = function() {
   initialPlaces.forEach(function(places){
     self.locationList.push(places);
   });
-  
+
 // Observerable text input from DOM filter input
   this.filter = ko.observable("");
 
@@ -135,30 +135,30 @@ var ViewModel = function() {
         var visits = details.response.venue.stats.visitsCount;
         // Create HTML for view window
         var content = "";
-        content += "<div class='infoWindo'><h2 class='infoName'>" + location.name + "</h2>";
-        content += "<h3 class='infoAddress'>" + location.address + "</h3>";
-        content += "<div class='fourSquare'>";
-        content += "<img class='viewImage' src='" + "https://igx.4sqi.net/img/general/width200" + suffixString + "' alt='Image'>";
-        content += "<div class='infoRight'><h4 class='infoType'>" + location.type + "</h4>";
-        content += "<div class='infoRating'><h4 class='infoRating'>Current Rating: </h4><h4 class='infoRating' style='color:#" + ratingColor + "'>" + rating + "</h4></div>";
+        content += "<div class='info-window'><h2 class='info-name'>" + location.name + "</h2>";
+        content += "<h3 class='info-address'>" + location.address + "</h3>";
+        content += "<div class='foursquare'>";
+        content += "<img class='view-image' src='" + "https://igx.4sqi.net/img/general/width200" + suffixString + "' alt='Image'>";
+        content += "<div class='infobox'><h4 class='info-type'>" + location.type + "</h4>";
+        content += "<div class='info-rating'><h4 class='info-rating'>Current Rating: </h4><h4 class='info-rating' style='color:#" + ratingColor + "'>" + rating + "</h4></div>";
         content += "<h4 class='infoVisits'>Registered Visits: " + visits + "</h4>";
         content += "</div></div>";
         infowindow.setContent(content);
       // If error from 2nd AJAX request, add content to view window
       }).fail(function() {
         var content = "";
-        content += "<h1 class='infoName'>" + location.name + "</h1>";
-        content += "<h2 class='infoAddress'>" + location.address + "</h2>";
-        content += "<h2 class='infoType'>" + location.type + "</h2>";
+        content += "<h1 class='info-name'>" + location.name + "</h1>";
+        content += "<h2 class='info-address'>" + location.address + "</h2>";
+        content += "<h2 class='info-type'>" + location.type + "</h2>";
         content += "<h4 class='error'>Unable to retrive additonal information from FourSquare<h4>";
         infowindow.setContent(content);
       });
     // If error from 1st AJAX request, add content to view window
     }).fail(function() {
       var content = "";
-      content += "<h1 class='infoName'>" + location.name + "</h1>";
-      content += "<h2 class='infoAddress'>" + location.address + "</h2>";
-      content += "<h2 class='infoType'>" + location.type + "</h2>";
+      content += "<h1 class='info-name'>" + location.name + "</h1>";
+      content += "<h2 class='info-address'>" + location.address + "</h2>";
+      content += "<h2 class='info-type'>" + location.type + "</h2>";
       content += "<h4 class='error'>Unable to retrive additonal information from FourSquare<h4>";
       infowindow.setContent(content);
     });
@@ -239,6 +239,27 @@ function initMap() {
 var newViewModel = new ViewModel();
 ko.applyBindings(new ViewModel());
 
+// Alert for error when loading Google Maps.  Used exactly from MDN GlobalEventHandlers.onerror
+window.onerror = function (msg, url, lineNo, columnNo, error) {
+    console.log("error event");
+    var string = msg.toLowerCase();
+    var substring = "script error";
+    if (string.indexOf(substring) > -1){
+        alert('Script Error: See Browser Console for Detail');
+    } else {
+        var message = [
+            'Message: ' + msg,
+            'URL: ' + url,
+            'Line: ' + lineNo,
+            'Column: ' + columnNo,
+            'Error object: ' + JSON.stringify(error)
+        ].join(' - ');
+
+        alert(message);
+    }
+
+    return false;
+};
 
 // Set the width of the side navigation to 250px from W3School
 function openNav() {

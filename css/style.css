@@ -1,8 +1,9 @@
-body, html {
+body,
+html {
   height: 100%;
   margin: 0;
   padding: 0;
-  font-family: 'Source Sans Pro', sans-serif;
+  font-family: "Source Sans Pro", sans-serif;
 }
 
 h1 {
@@ -13,20 +14,16 @@ h1 {
   font-size: 8px;
 }
 
-.infoRight {
+.info-block {
   float: left;
   padding-right: 20px;
 }
 
-.infoRating {
+.info-rating {
   display: inline;
 }
 
-.infoRating {
-  display: inline;
-}
-
-.infoName {
+.info-name {
   color: black;
 }
 
@@ -44,7 +41,7 @@ h1 {
   float: none;
 }
 
-.sideFilter {
+.side-filter {
   text-align: center;
   padding: 18px;
   background-color: #d1d1d1;
@@ -52,16 +49,7 @@ h1 {
   border-top: 3px solid black;
 }
 
-.topFilter {
-  text-align: center;
-  padding: 18px;
-  box-shadow: 0 0 5px rgba(81, 203, 238, 1);
-  border: 1px solid rgba(81, 203, 238, 1);
-  background-color: white;
-  color: black;
-}
-
-.menu_icon {
+.menu-icon {
   width: 20px;
   height: 20px;
   position: absolute;
@@ -109,7 +97,8 @@ h1 {
     display: block;
     transition: 0.3s;
 }
-.visibleLocations a {
+
+.visible-locations a {
     padding: 8px 8px 8px 32px;
     text-decoration: none;
     font-size: 25px;
@@ -153,10 +142,4 @@ h1 {
 @media screen and (max-height: 450px) {
     .sidenav {padding-top: 15px;}
     .sidenav a {font-size: 18px;}
-}
-
-@media screen and (max-width: 400px) {
-  .topFilter {
-    display: none;
-  }
 }

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="google-site-verification" content="Fdg1-mSvofRCk-vF3uPxzsKRrO2gIEAhmUkhYuvrrEA">
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
+    <title>Visit VIrgina Beach</title>
+  </head>
+  <body>
+    <main class="container">
+      <map id="map"></map>
+      <nav id="mySidenav" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <p class="side-filter">Filter by Name: <input data-bind="textInput: filter, valueUpdate: 'afterkeydown'" /></p>
+        <template class="locations" data-bind="foreach: locationFilter">
+          <a data-bind="text: name, click: $parent.markerSelected"></a>
+        </template>
+      </nav>
+      <nav id="main" class="navclosed">
+        <span onclick="openNav()"><img class="menu-icon" alt="Menu Icon for side navagation panel" src="images/hamburger_icon.png" /></span>
+      </nav>
+    </main>
+      <script src='js/libs/knockout-3.4.2.js'></script>
+      <script src="js/libs/jquery.min.js"></script>
+      <script src="js/script.js"></script>
+      <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCaFKXHtXutQgD0yE5O-JPrGVumbcdc5xE&callback=initMap" onerror="onerror()">
+      </script>
+  </body>
+</html>
