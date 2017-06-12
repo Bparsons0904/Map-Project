@@ -83,22 +83,17 @@ var initialPlaces = [
     }];
 
 
-var PlaceInformation = function(data) {
-  this.name = ko.observable(data.name);
-  this.latlng = ko.observable(data.latlng);
-};
-
-
 var ViewModel = function() {
   var self = this;
 
 // Observalble array, will store available locations
   this.locationList = ko.observableArray([]);
 
-// Runs all locations through PlaceInformation, adds to locationList
+// Runs all locations and adds to locationList
   initialPlaces.forEach(function(places){
     self.locationList.push(places);
   });
+  
 // Observerable text input from DOM filter input
   this.filter = ko.observable("");
 
@@ -188,7 +183,7 @@ function initMap() {
   // Call to generate map from google.
   map = new google.maps.Map(document.getElementById("map"), {
     // Optional settings for map
-    zoom: 12,
+    zoom: 10,
     center: {lat : 36.829047, lng : -76.124740},
     mapTypeControl: true,
     mapTypeControlOptions: {
@@ -213,14 +208,23 @@ function initMap() {
     infowindow = new google.maps.InfoWindow();
     var locations = newViewModel.locationFilter();
     // Go through each location from filter and create map marker
+    console.log("got to marker");
     for (i = 0; i <locations.length; i++){
+      createMarker(i).setMap(map);
+  }
+}
+
+    function createMarker(i) {
+      var locations = newViewModel.locationFilter();
       marker = new google.maps.Marker({
         position: new google.maps.LatLng(locations[i].latlng),
         map: map,
         title: String(locations[i].name),
       });
+      console.log(marker);
       // Assign marker to location array
       newViewModel.locationList()[i].marker = marker;
+      console.log(newViewModel.locationList()[i]);
       // Create a event listener for each marker
       google.maps.event.addListener(marker, "click", (function(location) {
         return function() {
@@ -228,8 +232,8 @@ function initMap() {
           newViewModel.markerSelected(location);
         };
       })(locations[i]));
+      return marker;
     }
-  }
 
 
 var newViewModel = new ViewModel();
