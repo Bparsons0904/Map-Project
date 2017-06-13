@@ -13,8 +13,8 @@
     <main class="container">
       <map name="map" id="map"></map>
       <nav id="mySidenav" class="sidenav">
-        <a data-bind="click: closeNav" class="closebtn" >&times;</a>
-        <p class="side-filter">Filter by Name: <input data-bind="textInput: filter, valueUpdate: 'afterkeydown'" /></p>
+        <aside data-bind="click: closeNav" class="closebtn" >&times;</aside>
+        <nav class="side-filter">Filter by Name: <input data-bind="textInput: filter, valueUpdate: 'afterkeydown'" /></nav>
         <aside class="locations" data-bind="foreach: locationFilter">
           <a data-bind="text: name, click: $parent.markerSelected"></a>
         </aside>
